@@ -1,0 +1,157 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --color-background: hsl(150 30% 97%);
+    --color-foreground: hsl(155 50% 8%);
+
+    --color-card: hsl(0 0% 100%);
+    --color-card-foreground: hsl(155 50% 8%);
+
+    --color-popover: hsl(0 0% 100%);
+    --color-popover-foreground: hsl(155 50% 8%);
+
+    --color-primary: hsl(152 72% 22%);
+    --color-primary-foreground: hsl(150 30% 98%);
+    --color-primary-glow: hsl(152 65% 38%);
+
+    --color-secondary: hsl(150 25% 92%);
+    --color-secondary-foreground: hsl(155 50% 12%);
+
+    --color-muted: hsl(150 20% 94%);
+    --color-muted-foreground: hsl(155 15% 40%);
+
+    --color-accent: hsl(42 95% 55%);
+    --color-accent-foreground: hsl(155 50% 10%);
+
+    --color-destructive: hsl(0 84% 55%);
+    --color-destructive-foreground: hsl(0 0% 98%);
+
+    --color-border: hsl(150 20% 88%);
+    --color-input: hsl(150 20% 88%);
+    --color-ring: hsl(152 72% 22%);
+}
+
+@layer base {
+    :root {
+        --radius: 0.875rem;
+        --gradient-hero: linear-gradient(135deg, hsl(152 72% 22%) 0%, hsl(152 65% 38%) 100%);
+        --gradient-accent: linear-gradient(135deg, hsl(42 95% 55%) 0%, hsl(38 92% 48%) 100%);
+        --shadow-elegant: 0 20px 60px -20px hsl(152 72% 22% / 0.35);
+        --shadow-card: 0 10px 30px -12px hsl(152 50% 15% / 0.18);
+    }
+
+    .dark {
+        --color-background: hsl(155 40% 6%);
+        --color-foreground: hsl(150 25% 95%);
+        --color-card: hsl(155 35% 9%);
+        --color-card-foreground: hsl(150 25% 95%);
+        --color-popover: hsl(155 35% 9%);
+        --color-popover-foreground: hsl(150 25% 95%);
+        --color-primary: hsl(152 65% 45%);
+        --color-primary-foreground: hsl(155 50% 8%);
+        --color-primary-glow: hsl(152 70% 55%);
+        --color-secondary: hsl(155 25% 14%);
+        --color-secondary-foreground: hsl(150 25% 95%);
+        --color-muted: hsl(155 25% 14%);
+        --color-muted-foreground: hsl(150 15% 65%);
+        --color-accent: hsl(42 95% 60%);
+        --color-accent-foreground: hsl(155 50% 8%);
+        --color-destructive: hsl(0 70% 50%);
+        --color-destructive-foreground: hsl(0 0% 98%);
+        --color-border: hsl(155 25% 18%);
+        --color-input: hsl(155 25% 18%);
+        --color-ring: hsl(152 65% 45%);
+    }
+
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground antialiased;
+        font-feature-settings: "ss01", "cv11";
+    }
+}
+
+@layer utilities {
+    .container {
+        margin-inline: auto;
+        width: 100%;
+        padding-inline: 2rem;
+    }
+
+    @media (width >= 1400px) {
+        .container {
+            max-width: 1400px;
+        }
+    }
+
+    .bg-gradient-hero {
+        background: var(--gradient-hero);
+    }
+
+    .bg-gradient-accent {
+        background: var(--gradient-accent);
+    }
+
+    .shadow-elegant {
+        box-shadow: var(--shadow-elegant);
+    }
+
+    .shadow-card {
+        box-shadow: var(--shadow-card);
+    }
+
+    .rounded-md {
+        border-radius: calc(var(--radius) - 2px);
+    }
+
+    .rounded-2xl {
+        border-radius: calc(var(--radius) + 0.25rem);
+    }
+
+    .rounded-xl {
+        border-radius: var(--radius);
+    }
+
+    .toast-wrap {
+        position: fixed;
+        right: 1rem;
+        bottom: 1rem;
+        z-index: 80;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .toast-item {
+        width: min(24rem, calc(100vw - 2rem));
+        border-radius: calc(var(--radius) - 2px);
+        border: 1px solid hsl(var(--border));
+        background: hsl(var(--card));
+        color: hsl(var(--card-foreground));
+        padding: 0.75rem 0.875rem;
+        box-shadow: var(--shadow-card);
+    }
+
+    .toast-item strong {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+
+    .toast-item span {
+        margin-top: 0.2rem;
+        display: block;
+        font-size: 0.75rem;
+        color: hsl(var(--muted-foreground));
+    }
+}
