@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Services\Sms\Providers\BrevoSmsProvider;
+use App\Services\Sms\Providers\LifetimeSmsProvider;
 use App\Services\Sms\Providers\MoceanSmsProvider;
 use App\Services\Sms\SmsProviderInterface;
 use App\Services\Sms\SmsService;
@@ -17,9 +18,10 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(SmsProviderInterface::class, function ($app) {
             return match ($this->resolveSmsProviderName()) {
+                'lifetime' => $app->make(LifetimeSmsProvider::class),
                 'mocean' => $app->make(MoceanSmsProvider::class),
                 'brevo' => $app->make(BrevoSmsProvider::class),
-                default => $app->make(BrevoSmsProvider::class),
+                default => $app->make(LifetimeSmsProvider::class),
             };
         });
 
@@ -41,8 +43,12 @@ class AppServiceProvider extends ServiceProvider
 
     private function resolveSmsProviderName(): string
     {
-        $provider = (string) config('services.sms.default_provider', config('sms.default', 'mocean'));
+        $provider = strtolower((string) config('services.sms.default_provider', config('sms.default', 'lifetime')));
 
-        return in_array($provider, ['brevo', 'mocean'], true) ? $provider : 'brevo';
+        if ($provider === 'lifetimesms') {
+            return 'lifetime';
+        }
+
+        return in_array($provider, ['lifetime', 'brevo', 'mocean'], true) ? $provider : 'lifetime';
     }
 }
