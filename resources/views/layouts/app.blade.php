@@ -21,9 +21,11 @@
     </head>
     <body>
         <div class="fm-shell">
-            <header class="fm-header" data-site-header>
+            @php($onAppPage = request()->routeIs('app') || request()->routeIs('dashboard'))
+            @php($useDashboardHeader = auth()->check())
+            <header class="fm-header {{ $useDashboardHeader ? 'fm-header-app' : '' }}" data-site-header>
                 <div class="container fm-header-inner">
-                    <a href="{{ route('home') }}" class="fm-brand">
+                    <a href="{{ $useDashboardHeader ? route('app') : route('home') }}" class="fm-brand">
                         <span class="fm-brand-logo">
                             <svg xmlns="http://www.w3.org/2000/svg" class="icon-18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="m14.7 6.3 3 3"></path>
@@ -36,23 +38,39 @@
                     </a>
 
                     <nav class="fm-nav" aria-label="Primary navigation">
-                        <a href="{{ route('home') }}" class="fm-nav-link {{ request()->routeIs('home') ? 'is-active' : '' }}">Home</a>
-                        <a href="{{ route('services.show') }}" class="fm-nav-link {{ request()->routeIs('services.*') ? 'is-active' : '' }}">Services</a>
-                        <a href="{{ route('contact.show') }}" class="fm-nav-link {{ request()->routeIs('contact.*') ? 'is-active' : '' }}">Contact</a>
-                        <a href="{{ route('terms.show') }}" class="fm-nav-link {{ request()->routeIs('terms.*') ? 'is-active' : '' }}">Terms</a>
+                        @if ($useDashboardHeader)
+                            <a href="{{ route('app') }}" class="fm-nav-link {{ request()->routeIs('app') || request()->routeIs('dashboard') ? 'is-active' : '' }}">Dashboard</a>
+                            <a href="{{ route('home') }}" class="fm-nav-link {{ request()->routeIs('home') ? 'is-active' : '' }}">Home</a>
+                            <a href="{{ route('services.show') }}" class="fm-nav-link {{ request()->routeIs('services.*') ? 'is-active' : '' }}">Services</a>
+                            <a href="{{ route('contact.show') }}" class="fm-nav-link {{ request()->routeIs('contact.*') ? 'is-active' : '' }}">Contact</a>
+                            <a href="{{ route('terms.show') }}" class="fm-nav-link {{ request()->routeIs('terms.*') ? 'is-active' : '' }}">Terms</a>
+                        @else
+                            <a href="{{ route('home') }}" class="fm-nav-link {{ request()->routeIs('home') ? 'is-active' : '' }}">Home</a>
+                            <a href="{{ route('services.show') }}" class="fm-nav-link {{ request()->routeIs('services.*') ? 'is-active' : '' }}">Services</a>
+                            <a href="{{ route('contact.show') }}" class="fm-nav-link {{ request()->routeIs('contact.*') ? 'is-active' : '' }}">Contact</a>
+                            <a href="{{ route('terms.show') }}" class="fm-nav-link {{ request()->routeIs('terms.*') ? 'is-active' : '' }}">Terms</a>
+                        @endif
                     </nav>
 
                     <div class="fm-actions">
-                        @guest
-                            <a href="{{ route('login') }}" class="btn btn-ghost btn-sm">Log in</a>
-                            <a href="{{ route('contact.show') }}" class="btn btn-hero btn-sm">Book now</a>
-                        @else
-                            <a href="{{ route('dashboard') }}" class="btn btn-ghost btn-sm">Open app</a>
+                        @if ($useDashboardHeader)
+                            <button type="button" class="btn btn-outline btn-sm hidden" data-install-app>Install app</button>
+                            @if ($onAppPage)
+                                <a href="{{ route('home') }}" class="btn btn-outline btn-sm">View site</a>
+                            @else
+                                <a href="{{ route('app') }}" class="btn btn-outline btn-sm">Open app</a>
+                            @endif
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit" class="btn btn-hero btn-sm">Sign out</button>
                             </form>
-                        @endguest
+                        @else
+                            @guest
+                                <button type="button" class="btn btn-outline btn-sm hidden" data-install-app>Install app</button>
+                                <a href="{{ route('login') }}" class="btn btn-ghost btn-sm">Log in</a>
+                                <a href="{{ route('contact.show') }}" class="btn btn-hero btn-sm">Book now</a>
+                            @endguest
+                        @endif
                     </div>
 
                     <button type="button" class="fm-mobile-toggle" data-nav-toggle aria-expanded="false" aria-controls="fm-mobile-menu">
@@ -67,23 +85,39 @@
 
                 <div class="fm-mobile-menu" data-mobile-menu id="fm-mobile-menu" hidden>
                     <div class="container fm-mobile-menu-inner">
-                        <a href="{{ route('home') }}" class="fm-mobile-link {{ request()->routeIs('home') ? 'is-active' : '' }}">Home</a>
-                        <a href="{{ route('services.show') }}" class="fm-mobile-link {{ request()->routeIs('services.*') ? 'is-active' : '' }}">Services</a>
-                        <a href="{{ route('contact.show') }}" class="fm-mobile-link {{ request()->routeIs('contact.*') ? 'is-active' : '' }}">Contact</a>
-                        <a href="{{ route('terms.show') }}" class="fm-mobile-link {{ request()->routeIs('terms.*') ? 'is-active' : '' }}">Terms</a>
+                        @if ($useDashboardHeader)
+                            <a href="{{ route('app') }}" class="fm-mobile-link {{ request()->routeIs('app') || request()->routeIs('dashboard') ? 'is-active' : '' }}">Dashboard</a>
+                            <a href="{{ route('home') }}" class="fm-mobile-link {{ request()->routeIs('home') ? 'is-active' : '' }}">Home</a>
+                            <a href="{{ route('services.show') }}" class="fm-mobile-link {{ request()->routeIs('services.*') ? 'is-active' : '' }}">Services</a>
+                            <a href="{{ route('contact.show') }}" class="fm-mobile-link {{ request()->routeIs('contact.*') ? 'is-active' : '' }}">Contact</a>
+                            <a href="{{ route('terms.show') }}" class="fm-mobile-link {{ request()->routeIs('terms.*') ? 'is-active' : '' }}">Terms</a>
 
-                        <div class="fm-mobile-actions">
-                            @guest
-                                <a href="{{ route('login') }}" class="btn btn-ghost">Log in</a>
-                                <a href="{{ route('contact.show') }}" class="btn btn-hero">Book now</a>
-                            @else
-                                <a href="{{ route('dashboard') }}" class="btn btn-ghost">Open app</a>
+                            <div class="fm-mobile-actions">
+                                <button type="button" class="btn btn-outline hidden" data-install-app>Install app</button>
+                                @if ($onAppPage)
+                                    <a href="{{ route('home') }}" class="btn btn-outline">View site</a>
+                                @else
+                                    <a href="{{ route('app') }}" class="btn btn-outline">Open app</a>
+                                @endif
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <button type="submit" class="btn btn-hero">Sign out</button>
                                 </form>
-                            @endguest
-                        </div>
+                            </div>
+                        @else
+                            <a href="{{ route('home') }}" class="fm-mobile-link {{ request()->routeIs('home') ? 'is-active' : '' }}">Home</a>
+                            <a href="{{ route('services.show') }}" class="fm-mobile-link {{ request()->routeIs('services.*') ? 'is-active' : '' }}">Services</a>
+                            <a href="{{ route('contact.show') }}" class="fm-mobile-link {{ request()->routeIs('contact.*') ? 'is-active' : '' }}">Contact</a>
+                            <a href="{{ route('terms.show') }}" class="fm-mobile-link {{ request()->routeIs('terms.*') ? 'is-active' : '' }}">Terms</a>
+
+                            <div class="fm-mobile-actions">
+                                @guest
+                                    <button type="button" class="btn btn-outline hidden" data-install-app>Install app</button>
+                                    <a href="{{ route('login') }}" class="btn btn-ghost">Log in</a>
+                                    <a href="{{ route('contact.show') }}" class="btn btn-hero">Book now</a>
+                                @endguest
+                            </div>
+                        @endif
                     </div>
                 </div>
             </header>

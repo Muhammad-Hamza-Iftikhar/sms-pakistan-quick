@@ -115,6 +115,7 @@ function bindInstallButtons(showToast) {
     }
 
     let deferredInstallPrompt = null;
+    const isIOS = /iphone|ipad|ipod/i.test(window.navigator.userAgent) && !/crios|fxios/i.test(window.navigator.userAgent);
     const isStandalone =
         (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
         window.navigator.standalone === true;
@@ -127,7 +128,11 @@ function bindInstallButtons(showToast) {
 
     if (isStandalone) {
         setButtonsHidden(true);
+        return;
     }
+
+    // Keep the button visible on normal browser pages (desktop/mobile web).
+    setButtonsHidden(false);
 
     window.addEventListener('beforeinstallprompt', (event) => {
         event.preventDefault();
@@ -159,8 +164,6 @@ function bindInstallButtons(showToast) {
                 return;
             }
 
-            const isIOS = /iphone|ipad|ipod/i.test(window.navigator.userAgent) && !/crios|fxios/i.test(window.navigator.userAgent);
-
             if (isIOS) {
                 showToast('Install on iOS', "Tap Share, then 'Add to Home Screen'.");
                 return;
@@ -171,7 +174,7 @@ function bindInstallButtons(showToast) {
                 return;
             }
 
-            showToast('Install not available yet', 'Open this site in Chrome or Edge on mobile or desktop.');
+            showToast('Install from browser', 'Use the Install/Open in app control in your browser address bar.');
         });
     });
 }

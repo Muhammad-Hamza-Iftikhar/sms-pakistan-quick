@@ -236,6 +236,25 @@ a {
     gap: 0.6rem;
 }
 
+.fm-actions form,
+.fm-mobile-actions form {
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+}
+
+.fm-actions .btn-outline,
+.fm-mobile-actions .btn-outline {
+    background: hsl(var(--secondary));
+    border-color: hsl(var(--border));
+}
+
+.fm-actions .btn-outline:hover,
+.fm-mobile-actions .btn-outline:hover {
+    background: hsl(var(--card));
+    border-color: hsl(var(--primary) / 0.35);
+}
+
 .fm-mobile-toggle {
     margin-left: auto;
     width: 2.5rem;
