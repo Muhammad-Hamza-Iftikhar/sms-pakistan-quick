@@ -1,13 +1,18 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
-@section('title', '404 | Pak SMS Connect')
+@section('title', '404 | FixMate')
 
 @section('content')
-    <div class="not-found">
+    <section class="not-found-wrap">
         <div class="not-found-card">
-            <h1 class="not-found-title">404</h1>
-            <p class="not-found-copy">Oops! Page not found</p>
-            <a href="{{ url('/') }}" class="not-found-link">Return to Home</a>
+            <p class="page-kicker">Error</p>
+            <h1>404</h1>
+            <p>The page you are trying to reach does not exist.</p>
+            <div class="not-found-actions">
+                <a href="{{ route('home') }}" class="btn btn-hero">Back to home</a>
+                <a href="{{ route('contact.show') }}" class="btn btn-outline">Contact support</a>
+            </div>
         </div>
-    </div>
+    </section>
 @endsection
+

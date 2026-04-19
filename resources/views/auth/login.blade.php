@@ -1,48 +1,46 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
-@section('title', 'Sign In | Pak SMS Connect')
+@section('title', 'Log In | FixMate')
 
 @section('content')
-    <div class="login-shell">
-        <aside class="login-brand-panel">
-            <a href="{{ url('/') }}" class="brand">
-                <span class="brand-badge">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-circle icon-20">
-                        <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path>
+    <section class="container login-page-wrap">
+        <div class="login-brand-pane">
+            <a href="{{ route('home') }}" class="fm-brand">
+                <span class="fm-brand-logo">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon-18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 3 5 6v6c0 5 3.5 8.5 7 10 3.5-1.5 7-5 7-10V6z"></path>
+                        <path d="m9 12 2 2 4-4"></path>
                     </svg>
                 </span>
-                <span class="brand-name">Pak SMS Connect</span>
+                <span class="fm-brand-text">SkillCert</span>
             </a>
 
-            <div class="login-brand-copy">
-                <h2>Officially yours.</h2>
-                <p>Sign in to dispatch SMS to Pakistani numbers in seconds.</p>
+            <h1>One certificate.<br><span class="text-gradient-light">A world of opportunity.</span></h1>
+            <p>
+                Sign in to track your evaluation, view your certificates, and share your verifiable
+                SkillCert ID with employers worldwide.
+            </p>
+
+            <div class="login-promo-card">
+                <p class="login-promo-title">Secure & private</p>
+                <p class="login-promo-copy">Your certificates are tied to a unique ID - only what you choose to share is public.</p>
             </div>
+        </div>
 
-            <p class="login-brand-foot">&copy; {{ now()->year }} Pak SMS Connect</p>
-        </aside>
-
-        <main class="login-main">
-            <div class="login-card">
-                <div class="mobile-brand">
-                    <a href="{{ url('/') }}" class="brand">
-                        <span class="brand-badge">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-circle icon-20">
-                                <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path>
-                            </svg>
-                        </span>
-                        <span class="brand-name">Pak SMS Connect</span>
-                    </a>
+        <div class="login-form-pane">
+            <div class="login-form-card">
+                <div class="login-switch login-switch-single">
+                    <button type="button" class="is-active">Log in</button>
                 </div>
 
-                <h1 class="page-title">Welcome back</h1>
-                <p class="page-subtitle">Sign in to continue to your dashboard.</p>
+                <h2>Welcome back</h2>
+                <p>Pick up where you left off.</p>
 
-                <form method="POST" action="{{ route('login') }}" class="form-stack" novalidate>
+                <form method="POST" action="{{ route('login') }}" class="login-form" novalidate>
                     @csrf
 
-                    <div class="form-group">
-                        <label for="email" class="form-label">Email</label>
+                    <div class="field-wrap">
+                        <label for="email" class="field-label">Email</label>
                         <input
                             id="email"
                             name="email"
@@ -50,7 +48,7 @@
                             autocomplete="email"
                             placeholder="you@example.com"
                             value="{{ old('email') }}"
-                            class="form-input"
+                            class="field-input"
                             required
                             autofocus
                         />
@@ -59,15 +57,18 @@
                         @enderror
                     </div>
 
-                    <div class="form-group">
-                        <label for="password" class="form-label">Password</label>
+                    <div class="field-wrap">
+                        <div class="field-row-between">
+                            <label for="password" class="field-label no-margin">Password</label>
+                            <button type="button" class="login-forgot">Forgot?</button>
+                        </div>
                         <input
                             id="password"
                             name="password"
                             type="password"
                             autocomplete="current-password"
                             placeholder="........"
-                            class="form-input"
+                            class="field-input"
                             required
                         />
                         @error('password')
@@ -75,13 +76,17 @@
                         @enderror
                     </div>
 
-                    <div class="space-top">
-                        <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; box-shadow: var(--shadow-elegant);">
-                            Sign in
-                        </button>
-                    </div>
+                    <button type="submit" class="btn btn-hero btn-lg btn-full">
+                        Log in
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </button>
                 </form>
+
+                <p class="login-terms-note">
+                    By continuing you agree to our <a href="{{ route('terms.show') }}">Terms & Conditions</a>.
+                </p>
             </div>
-        </main>
-    </div>
+        </div>
+    </section>
 @endsection
+

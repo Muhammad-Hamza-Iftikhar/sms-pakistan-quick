@@ -21,8 +21,11 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => item.remove(), 2800);
     };
 
+    bindSiteNavigation();
     bindInstallButtons(showToast);
     bindSmsForm(showToast);
+    bindContactForm(showToast);
+    bindServicesFilters();
 });
 
 function registerServiceWorker() {
@@ -52,6 +55,56 @@ function ensureToastHost() {
     }
 
     return host;
+}
+
+function bindSiteNavigation() {
+    const header = document.querySelector('[data-site-header]');
+    const toggle = document.querySelector('[data-nav-toggle]');
+    const menu = document.querySelector('[data-mobile-menu]');
+
+    if (header) {
+        const onScroll = () => {
+            header.classList.toggle('is-scrolled', window.scrollY > 8);
+        };
+
+        onScroll();
+        window.addEventListener('scroll', onScroll, { passive: true });
+    }
+
+    if (!toggle || !menu) {
+        return;
+    }
+
+    const closeMenu = () => {
+        menu.hidden = true;
+        toggle.setAttribute('aria-expanded', 'false');
+    };
+
+    const openMenu = () => {
+        menu.hidden = false;
+        toggle.setAttribute('aria-expanded', 'true');
+    };
+
+    toggle.addEventListener('click', () => {
+        if (menu.hidden) {
+            openMenu();
+            return;
+        }
+
+        closeMenu();
+    });
+
+    menu.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => {
+            closeMenu();
+        });
+    });
+
+    window.addEventListener('resize', () => {
+        if (window.matchMedia('(min-width: 960px)').matches) {
+            closeMenu();
+        }
+    });
 }
 
 function bindInstallButtons(showToast) {
@@ -251,4 +304,128 @@ function bindSmsForm(showToast) {
         messageInput.value = trimmedMessage;
         showToast('Sending SMS...');
     });
+}
+
+function bindContactForm(showToast) {
+    const form = document.querySelector('[data-contact-form]');
+
+    if (!form) {
+        return;
+    }
+
+    const messageInput = form.querySelector('[data-contact-message]');
+    const charCounter = form.querySelector('[data-contact-char]');
+    const nameInput = form.querySelector('[name="name"]');
+    const emailInput = form.querySelector('[name="email"]');
+    const subjectInput = form.querySelector('[name="subject"]');
+
+    const updateCounter = () => {
+        if (!messageInput || !charCounter) {
+            return;
+        }
+
+        charCounter.textContent = `${messageInput.value.length}/2000`;
+    };
+
+    if (messageInput) {
+        messageInput.addEventListener('input', updateCounter);
+        updateCounter();
+    }
+
+    form.addEventListener('submit', (event) => {
+        if (!messageInput || !nameInput || !emailInput || !subjectInput) {
+            return;
+        }
+
+        nameInput.value = nameInput.value.trim();
+        emailInput.value = emailInput.value.trim();
+        subjectInput.value = subjectInput.value.trim();
+        messageInput.value = messageInput.value.trim();
+
+        if (nameInput.value.length < 2) {
+            event.preventDefault();
+            showToast('Missing name', 'Please enter your full name.');
+            return;
+        }
+
+        if (subjectInput.value.length < 3) {
+            event.preventDefault();
+            showToast('Missing subject', 'Please enter a short subject.');
+            return;
+        }
+
+        if (messageInput.value.length < 10) {
+            event.preventDefault();
+            showToast('Message too short', 'Please enter at least 10 characters.');
+            return;
+        }
+
+        showToast('Sending message...');
+    });
+}
+
+function bindServicesFilters() {
+    const searchInput = document.querySelector('[data-service-search]');
+    const chips = Array.from(document.querySelectorAll('[data-service-chip]'));
+    const cards = Array.from(document.querySelectorAll('[data-service-card]'));
+    const featured = document.querySelector('[data-service-featured]');
+    const emptyState = document.querySelector('[data-services-empty]');
+
+    if (!searchInput || !chips.length || !cards.length) {
+        return;
+    }
+
+    let activeCategory = 'All';
+
+    const matchesFilter = (card, query, category) => {
+        const cardCategory = card.getAttribute('data-category') || '';
+        const title = card.getAttribute('data-title') || '';
+        const excerpt = card.getAttribute('data-excerpt') || '';
+        const author = card.getAttribute('data-author') || '';
+
+        const inCategory = category === 'All' || cardCategory === category;
+        const haystack = `${cardCategory} ${title} ${excerpt} ${author}`.toLowerCase();
+        const inSearch = !query || haystack.includes(query);
+
+        return inCategory && inSearch;
+    };
+
+    const applyFilters = () => {
+        const query = searchInput.value.trim().toLowerCase();
+        let visibleCount = 0;
+
+        cards.forEach((card) => {
+            const isFeatured = card.hasAttribute('data-service-featured');
+            const shouldShow = matchesFilter(card, query, activeCategory);
+
+            card.classList.toggle('hidden', !shouldShow);
+
+            if (!isFeatured && shouldShow) {
+                visibleCount += 1;
+            }
+        });
+
+        const hasVisibleFeatured = featured ? !featured.classList.contains('hidden') : false;
+        const hasAnyVisible = hasVisibleFeatured || visibleCount > 0;
+
+        if (emptyState) {
+            emptyState.classList.toggle('hidden', hasAnyVisible);
+        }
+    };
+
+    chips.forEach((chip) => {
+        chip.addEventListener('click', () => {
+            const category = chip.getAttribute('data-category') || 'All';
+            activeCategory = category;
+
+            chips.forEach((item) => {
+                item.classList.toggle('is-active', item === chip);
+            });
+
+            applyFilters();
+        });
+    });
+
+    searchInput.addEventListener('input', applyFilters);
+    applyFilters();
 }
